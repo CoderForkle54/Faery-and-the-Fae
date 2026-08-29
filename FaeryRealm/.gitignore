@@ -1,0 +1,14 @@
+# Gradle
+.gradle/
+build/
+
+# Forge run data
+run/
+run-data/
+
+# IDE files
+.idea/
+*.iml
+.classpath
+.project
+.settings/

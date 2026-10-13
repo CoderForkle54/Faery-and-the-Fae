@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "faery-realm",
+	"version": "${version}",
+	"name": "Faery Realm",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/faery-realm/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.swordsparks.faeryrealm.FaeryRealm"
+		],
+		"client": [
+			"com.swordsparks.faeryrealm.client.FaeryRealmClient"
+		]
+	},
+	"mixins": [
+		"faery-realm.mixins.json",
+		{
+			"config": "faery-realm.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

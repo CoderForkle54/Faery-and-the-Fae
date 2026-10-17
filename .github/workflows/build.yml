@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
@@ -19,8 +21,17 @@ jobs:
         with:
           java-version: '25'
           distribution: 'microsoft'
-      - name: make gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: ensure gradle wrapper exists and make it executable
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/gradlew" ]; then
+            echo "Found gradlew in repository root — making executable"
+            chmod +x "$GITHUB_WORKSPACE/gradlew"
+          else
+            echo "::error::gradlew not found in repository root ($GITHUB_WORKSPACE). Listing repo contents for debugging:"
+            ls -la "$GITHUB_WORKSPACE"
+            echo "If your project uses the wrapper in a subdirectory, set 'working-directory:' on the steps that run gradle, or update this workflow to point to the subproject path."
+            exit 1
+          fi
       - name: build
         run: ./gradlew build
       - name: capture build artifacts

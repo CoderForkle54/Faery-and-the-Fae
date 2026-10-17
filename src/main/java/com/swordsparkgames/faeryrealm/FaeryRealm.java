@@ -22,13 +22,18 @@ public class FaeryRealm {
 
     public static final RegistryObject<Item> FAERY_DUST = ITEMS.register("faery_dust",
             () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> Ancient_Soil = ITEMS.register("ancient_soil",
+            () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<CreativeModeTab> FAERY_REALM_TAB = CREATIVE_MODE_TABS.register("faery_realm_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.faeryrealm.faery_realm_tab"))
                     .withTabsBefore(CreativeModeTabs.INGREDIENTS)
                     .icon(() -> FAERY_DUST.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> output.accept(FAERY_DUST.get()))
+                    .displayItems((parameters, output) -> {
+                        output.accept(FAERY_DUST.get());
+                        output.accept(Ancient_Soil.get());
+                    })
                     .build());
 
     public FaeryRealm(FMLJavaModLoadingContext context) {

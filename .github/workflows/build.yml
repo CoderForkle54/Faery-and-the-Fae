@@ -1,8 +1,3 @@
-# Automatically build the project and run any configured tests for every push
-# and submitted pull request. This can help catch issues that only occur on
-# certain platforms or Java versions, and provides a first line of defence
-# against bad commits.
-
 name: build
 on: [pull_request, push]
 
@@ -21,14 +16,41 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: build project
+      - name: ensure Gradle wrapper is present (generate if needed)
         run: |
+          set -euo pipefail
+          echo "Checking for gradle wrapper runtime..."
           if [ -x "$GITHUB_WORKSPACE/gradlew" ] && [ -f "$GITHUB_WORKSPACE/gradle/wrapper/gradle-wrapper.jar" ]; then
-            echo "Using project Gradle wrapper"
+            echo "Gradle wrapper appears complete"
+          else
+            echo "Gradle wrapper missing or incomplete. Installing system Gradle to generate the wrapper."
+            sudo apt-get update
+            sudo apt-get install -y gradle
+            # Run from repo root to generate the wrapper files according to the top-level build.gradle
             cd "$GITHUB_WORKSPACE"
+            gradle wrapper --gradle-version 8.8 || gradle wrapper || true
+            if [ -f "$GITHUB_WORKSPACE/gradle/wrapper/gradle-wrapper.jar" ]; then
+              echo "Generated gradle-wrapper.jar"
+            else
+              echo "Failed to generate gradle-wrapper.jar; falling back to system Gradle for build"
+            fi
+          fi
+
+      - name: make wrapper executable
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/gradlew" ]; then
+            chmod +x "$GITHUB_WORKSPACE/gradlew" || true
+          fi
+
+      - name: build
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          if [ -x "./gradlew" ]; then
+            echo "Using project Gradle wrapper"
             ./gradlew build
           else
-            echo "Gradle wrapper is missing or incomplete; falling back to system Gradle"
+            echo "Using system Gradle"
             sudo apt-get update
             sudo apt-get install -y gradle
             gradle build

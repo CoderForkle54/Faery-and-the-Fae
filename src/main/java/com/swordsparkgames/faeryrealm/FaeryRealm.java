@@ -1,44 +1,92 @@
-package com.swordsparkgames.faeryrealm;
+package net.swordsparkgames.faeryrealm;
 
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-@Mod(FaeryRealm.MOD_ID)
-public class FaeryRealm {
-    public static final String MOD_ID = "faeryrealm";
+import net.swordsparkgames.faeryrealm.init.FaeryRealmModTabs;
+import net.swordsparkgames.faeryrealm.init.FaeryRealmModItems;
+import net.swordsparkgames.faeryrealm.init.FaeryRealmModBlocks;
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
-            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.bus.api.IEventBus;
 
-    public static final RegistryObject<Item> FAERY_DUST = ITEMS.register("faery_dust",
-            () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> Ancient_Soil = ITEMS.register("ancient_soil",
-            () -> new Item(new Item.Properties()));
+import net.minecraft.server.TickTask;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 
-    public static final RegistryObject<CreativeModeTab> FAERY_REALM_TAB = CREATIVE_MODE_TABS.register("faery_realm_tab",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.faeryrealm.faery_realm_tab"))
-                    .withTabsBefore(CreativeModeTabs.INGREDIENTS)
-                    .icon(() -> FAERY_DUST.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> {
-                        output.accept(FAERY_DUST.get());
-                        output.accept(Ancient_Soil.get());
-                    })
-                    .build());
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
+import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Comparator;
 
-    public FaeryRealm(FMLJavaModLoadingContext context) {
-        IEventBus modEventBus = context.getModEventBus();
-        ITEMS.register(modEventBus);
-        CREATIVE_MODE_TABS.register(modEventBus);
-    }
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
+import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
+
+@Mod("faery_realm")
+public class FaeryRealmMod {
+	public static final Logger LOGGER = LogManager.getLogger(FaeryRealmMod.class);
+	public static final String MODID = "faery_realm";
+
+	public FaeryRealmMod(IEventBus modEventBus) {
+		// Start of user code block mod constructor
+		// End of user code block mod constructor
+		NeoForge.EVENT_BUS.register(this);
+		modEventBus.addListener(this::registerNetworking);
+		FaeryRealmModBlocks.REGISTRY.register(modEventBus);
+		FaeryRealmModItems.REGISTRY.register(modEventBus);
+		FaeryRealmModTabs.REGISTRY.register(modEventBus);
+		// Start of user code block mod init
+		// End of user code block mod init
+	}
+
+	// Start of user code block mod methods
+	// End of user code block mod methods
+	private static boolean networkingRegistered = false;
+	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
+
+	private record NetworkMessage<T extends CustomPacketPayload>(StreamCodec<? extends FriendlyByteBuf, T> reader, IPayloadHandler<T> handler) {
+	}
+
+	public static <T extends CustomPacketPayload> void addNetworkMessage(CustomPacketPayload.Type<T> id, StreamCodec<? extends FriendlyByteBuf, T> reader, IPayloadHandler<T> handler) {
+		if (networkingRegistered)
+			throw new IllegalStateException("Cannot register new network messages after networking has been registered");
+		MESSAGES.put(id, new NetworkMessage<>(reader, handler));
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private void registerNetworking(final RegisterPayloadHandlersEvent event) {
+		final PayloadRegistrar registrar = event.registrar(MODID);
+		MESSAGES.forEach((id, networkMessage) -> registrar.playBidirectional(id, ((NetworkMessage) networkMessage).reader(), ((NetworkMessage) networkMessage).handler()));
+		networkingRegistered = true;
+	}
+
+	private static final Queue<IntObjectPair<Runnable>> workToBeScheduled = new ConcurrentLinkedQueue<>();
+	private static final PriorityQueue<TickTask> workQueue = new PriorityQueue<>(Comparator.comparingInt(TickTask::getTick));
+
+	public static void queueServerWork(int delay, Runnable action) {
+		if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER)
+			workToBeScheduled.add(new IntObjectImmutablePair<>(delay, action));
+	}
+
+	@SubscribeEvent
+	public void tick(ServerTickEvent.Post event) {
+		int currentTick = event.getServer().getTickCount();
+		IntObjectPair<Runnable> work;
+		while ((work = workToBeScheduled.poll()) != null) {
+			workQueue.add(new TickTask(currentTick + work.leftInt(), work.right()));
+		}
+		while (!workQueue.isEmpty() && currentTick >= workQueue.peek().getTick()) {
+			workQueue.poll().run();
+		}
+	}
 }

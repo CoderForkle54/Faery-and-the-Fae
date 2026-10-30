@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "faery_realm:block/sacred_cobblestone",
+    "up": "faery_realm:block/sacred_cobblestone",
+    "north": "faery_realm:block/sacred_cobblestone",
+    "east": "faery_realm:block/sacred_cobblestone",
+    "south": "faery_realm:block/sacred_cobblestone",
+    "west": "faery_realm:block/sacred_cobblestone",
+    "particle": "faery_realm:block/sacred_cobblestone"
+  },
+  "render_type": "solid"
+}

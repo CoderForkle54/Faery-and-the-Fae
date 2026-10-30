@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "faery_realm:block/anciet_soil",
+    "up": "faery_realm:block/anciet_soil",
+    "north": "faery_realm:block/anciet_soil",
+    "east": "faery_realm:block/anciet_soil",
+    "south": "faery_realm:block/anciet_soil",
+    "west": "faery_realm:block/anciet_soil",
+    "particle": "faery_realm:block/anciet_soil"
+  },
+  "render_type": "solid"
+}

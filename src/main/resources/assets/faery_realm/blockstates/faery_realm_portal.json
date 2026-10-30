@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "faery_realm:block/faery_realm_portal_ew"
+    },
+    "axis=x": {
+      "model": "faery_realm:block/faery_realm_portal_ns"
+    }
+  }
+}

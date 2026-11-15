@@ -2,6 +2,14 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven { url = 'https://maven.minecraftforge.net' }
+        exclusiveContent {
+            forRepository {
+                maven { url = 'https://cursemaven.com' }
+            }
+            filter {
+                includeGroup 'curse.maven'
+            }
+        }
     }
 }
 

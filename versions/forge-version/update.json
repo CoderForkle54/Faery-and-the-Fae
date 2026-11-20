@@ -1,15 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/faerie-realm",
   "1.20.1": {
-    "0.0.6": "<changelog for this version>", 
-    // List all versions of your mod for the given Minecraft version, along with their changelogs
-    // ...
+    "0.0.5": "Faery Realm v0.0.5 Forge - 1.20.1\n\nAdded:\n- Whispering Wood and the Whispering Wood block set\n- The Whispering Woods biome\n- World generation for the Whispering Woods in the Faery Realm\n- Undead Celtic Warrior, a test mob using GeckoLib"
   },
   "promos": {
-    "1.20.1-latest": "0.0.6",
-    // Declare the latest "bleeding-edge" version of your mod for the given Minecraft version
-    "1.20.1-recommended": "v0.0.5",
-    // Declare the latest "stable" version of your mod for the given Minecraft version
-    // ...
+    "1.20.1-latest": "0.0.5",
+    "1.20.1-recommended": "0.0.5"
   }
 }

@@ -5,10 +5,13 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -21,6 +24,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+// The value here should match an entry in the META-INF/mods.toml file
 @Mod(FaerieRealm.MODID)
 public class FaerieRealm {
 
@@ -32,15 +36,29 @@ public class FaerieRealm {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Placeholder tab icon until a real Faerie Realm item exists.
-    private static final RegistryObject<Item> TAB_ICON = ITEMS.register("tab_icon_placeholder",
+    // "faerie_realm:sacred_stone" - drops only with the correct tool
+    public static final RegistryObject<Block> SACRED_STONE = BLOCKS.register("sacred_stone",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(5.0f, 6.0f)
+                    .requiresCorrectToolForDrops()));
+
+    public static final RegistryObject<Item> SACRED_STONE_ITEM = ITEMS.register("sacred_stone",
+            () -> new BlockItem(SACRED_STONE.get(), new Item.Properties()));
+
+    // "faerie_realm:faery_dust"
+    public static final RegistryObject<Item> FAERY_DUST = ITEMS.register("faery_dust",
             () -> new Item(new Item.Properties()));
 
+    // "faerie_realm:faerie_tab" - placed after the combat tab, icons and entries from our own content
     public static final RegistryObject<CreativeModeTab> FAERIE_TAB = CREATIVE_MODE_TABS.register("faerie_tab",
             () -> CreativeModeTab.builder()
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> TAB_ICON.get().getDefaultInstance())
-                    .displayItems((parameters, output) -> { /* content added later */ })
+                    .icon(() -> FAERY_DUST.get().getDefaultInstance())
+                    .displayItems((parameters, output) -> {
+                        output.accept(FAERY_DUST.get());
+                        output.accept(SACRED_STONE_ITEM.get());
+                    })
                     .build());
 
     public FaerieRealm(FMLJavaModLoadingContext context) {

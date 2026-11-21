@@ -1,7 +1,11 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/faerie-realm",
   "1.20.1": {
-    "0.0.5": "Faery Realm v0.0.5 Forge - 1.20.1\n\nAdded:\n- Whispering Wood and the Whispering Wood block set\n- The Whispering Woods biome\n- World generation for the Whispering Woods in the Faery Realm\n- Undead Celtic Warrior, a test mob using GeckoLib"
+    "0.0.1": "Faerie Realm v0.0.1 Forge - 1.20.1\n\nAdded:\n- The Faerie Realm dimension\n- The Dimension Lighter",
+    "0.0.2": "Faerie Realm v0.0.2 Forge - 1.20.1\n\nAdded:\n- Sacred Stone block\n- Faerie Realm Blocks creative tab",
+    "0.0.3": "Faerie Realm v0.0.3 Forge - 1.20.1\n\nAdded:\n- Sacred Cobblestone\n- Eternal Plains biome (note: Eternal Plains may also generate in the Overworld)\n- Faerie Realm dimension generation",
+    "0.0.4": "Faerie Realm v0.0.4 Forge - 1.20.1\n\nAdded:\n- Ancient Soil block\n- Natural generation for the Eternal Plains\n- Eternal Plains trees (smaller trees replacing the Giant Tree)\n- Sacred Stone can be converted into normal Stone\n\nChanged:\n- Tweaked sky and fog colors of the Eternal Plains\n- Faerie Realm blocks added to Natural Blocks and the Faerie Realm creative tabs\n\nRemoved:\n- Giant Tree\n- Ruined Portal generation",
+    "0.0.5": "Faerie Realm v0.0.5 Forge - 1.20.1\n\nAdded:\n- Whispering Wood and the Whispering Wood block set\n- The Whispering Woods biome\n- World generation for the Whispering Woods in the Faerie Realm\n- Undead Celtic Warrior enemy"
   },
   "promos": {
     "1.20.1-latest": "0.0.5",

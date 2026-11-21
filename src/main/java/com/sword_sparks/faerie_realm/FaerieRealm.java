@@ -7,7 +7,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -46,6 +45,11 @@ public class FaerieRealm {
     public static final RegistryObject<Item> SACRED_STONE_ITEM = ITEMS.register("sacred_stone",
             () -> new BlockItem(SACRED_STONE.get(), new Item.Properties()));
 
+    public static final RegistryObject<Block> SACRED_COBBLESTONE = BLOCKS.register("sacred_cobblestone",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(3.0f, 4.0f)
+                    .requiresCorrectToolForDrops()));
     // "faerie_realm:faery_dust"
     public static final RegistryObject<Item> FAERY_DUST = ITEMS.register("faery_dust",
             () -> new Item(new Item.Properties()));
@@ -57,6 +61,7 @@ public class FaerieRealm {
                     .displayItems((parameters, output) -> {
                         output.accept(FAERY_DUST.get());
                         output.accept(SACRED_STONE_ITEM.get());
+                        output.accept(SACRED_COBBLESTONE.get());
                     })
                     .build());
 

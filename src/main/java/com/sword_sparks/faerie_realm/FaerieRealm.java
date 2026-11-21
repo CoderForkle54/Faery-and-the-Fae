@@ -53,7 +53,6 @@ public class FaerieRealm {
     // "faerie_realm:faerie_tab" - placed after the combat tab, icons and entries from our own content
     public static final RegistryObject<CreativeModeTab> FAERIE_TAB = CREATIVE_MODE_TABS.register("faerie_tab",
             () -> CreativeModeTab.builder()
-                    .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(() -> FAERY_DUST.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(FAERY_DUST.get());

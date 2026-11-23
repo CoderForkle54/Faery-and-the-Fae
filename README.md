@@ -1,4 +1,6 @@
 # Faery-and-the-Fae
+### Project Summary
+#### Curseforge:
 What was lost........ Comes looking to be found again.......... Dive into the Faerie Realm a mod that allows you to visit a mystical world of elves and faeries. Not the cute ones.... Terrifying mischievous ones that will come every time there is fog.
 
 

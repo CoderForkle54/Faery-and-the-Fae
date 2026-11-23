@@ -50,21 +50,32 @@ public class FaerieRealm {
                     .mapColor(MapColor.COLOR_PURPLE)
                     .strength(3.0f, 4.0f)
                     .requiresCorrectToolForDrops()));
+
+    public static final RegistryObject<Item> SACRED_COBBLESTONE_ITEM = ITEMS.register("sacred_cobblestone",
+            () -> new BlockItem(SACRED_COBBLESTONE.get(), new Item.Properties()));
+
     // "faerie_realm:faery_dust"
     public static final RegistryObject<Item> FAERY_DUST = ITEMS.register("faery_dust",
             () -> new Item(new Item.Properties()));
 
-    // "faerie_realm:faerie_tab" - placed after the combat tab, icons and entries from our own content
-    public static final RegistryObject<CreativeModeTab> FAERIE_TAB = CREATIVE_MODE_TABS.register("faerie_tab",
+    // "faerie_realm:faerie_realm_blocks" - placed after the combat tab, icons and entries from our own content
+    public static final RegistryObject<CreativeModeTab> FAERIE_REALM_ITEMS = CREATIVE_MODE_TABS.register("faerie_realm_items",
             () -> CreativeModeTab.builder()
                     .icon(() -> FAERY_DUST.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(FAERY_DUST.get());
                         output.accept(SACRED_STONE_ITEM.get());
-                        output.accept(SACRED_COBBLESTONE.get());
+                        output.accept(SACRED_COBBLESTONE_ITEM.get());
                     })
                     .build());
-
+    public static final RegistryObject<CreativeModeTab> FAERIE_REALM_BLOCKS = CREATIVE_MODE_TABS.register("faerie_realm_blocks",
+            () -> CreativeModeTab.builder()
+		    .icon(() -> SACRED_STONE.get().getDefaultInstance())
+		    .displayItems((parameters, output) -> {
+		  	output.accept(SACRED_STONE_ITEM.get());
+            output.accept(SACRED_COBBLESTONE_ITEM.get());
+		  })
+          .build()); 
     public FaerieRealm(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 

@@ -70,7 +70,7 @@ public class FaerieRealm {
                     .build());
     public static final RegistryObject<CreativeModeTab> FAERIE_REALM_BLOCKS = CREATIVE_MODE_TABS.register("faerie_realm_blocks",
             () -> CreativeModeTab.builder()
-		    .icon(() -> SACRED_STONE.get().getDefaultInstance())
+		    .icon(() -> SACRED_STONE_ITEM.get().getDefaultInstance())
 		    .displayItems((parameters, output) -> {
 		  	output.accept(SACRED_STONE_ITEM.get());
             output.accept(SACRED_COBBLESTONE_ITEM.get());

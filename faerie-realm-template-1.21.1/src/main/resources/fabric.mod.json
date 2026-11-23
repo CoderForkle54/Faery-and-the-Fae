@@ -9,9 +9,9 @@
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/CoderForkle54/Faery-and-the-Fae"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/faerie_realm/icon.png",
 	"environment": "*",
 	"entrypoints": {
